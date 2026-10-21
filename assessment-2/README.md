@@ -13,11 +13,11 @@ Outputs vehicle status and warnings if present. Warns when speed is greater than
 Build the application using Bazel:
 
 ```
-bazel build //src:main
+bazel build //assessment-2/src:main
 ```
 
 Then you can launch it by running:
 
 ```
-./bazel-bin/src/main
+./bazel-bin/assessment-2/src/main
 ```

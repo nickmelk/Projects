@@ -1,19 +1,27 @@
 #include <array>
+#include <cstddef>
 #include <iostream>
 #include <numeric>
+#include <optional>
 
-double calculate_average(const std::array<int, 5>& values)
+template <typename T, std::size_t N>
+std::optional<T> calculate_average(const std::array<T, N>& values)
 {
-    return std::accumulate(values.begin(), values.end(), 0.0)
-           / values.size();
+    if (values.empty())
+        return {};
+    return std::accumulate(values.begin(), values.end(), 0)
+        / values.size();
 }
 
 int main()
 {
     std::array<int, 5> speeds {60, 80, 100, 90, 70};
-    double average {calculate_average(speeds)};
+    auto average {calculate_average(speeds)};
 
-    std::cout << average << '\n';
+    if (average)
+        std::cout << *average << '\n';
+    else
+        std::cout << "No data\n";
 
     return 0;
 }
