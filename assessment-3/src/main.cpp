@@ -74,14 +74,14 @@ void get_speed_data(SpeedData& data)
 
 std::ostream& operator<<(std::ostream& out, std::vector<int> vect)
 {
-    std::cout << '[';
+    out << '[';
     for (int i {}; i < vect.size(); ++i)
     {
         out << vect[i];
         if (i < vect.size()-1)
-            std::cout << ", ";
+            out << ", ";
     }
-    std::cout << ']';
+    out << ']';
 
     return out;
 }

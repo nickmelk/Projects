@@ -2,7 +2,7 @@
 #include <iostream>
 #include <numeric>
 
-double calculate_average(const std::array<int, 5> values)
+double calculate_average(const std::array<int, 5>& values)
 {
     return std::accumulate(values.begin(), values.end(), 0.0)
            / values.size();
