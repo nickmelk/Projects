@@ -16,6 +16,12 @@ Build the application using Bazel:
 bazel build //assessment-2/src:main
 ```
 
+You can also build all targets at once:
+
+```
+bazel build //...
+```
+
 Then you can launch it by running:
 
 ```

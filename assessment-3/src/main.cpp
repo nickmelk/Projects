@@ -1,20 +1,26 @@
 #include "speed_data.h"
 
-#include <algorithm>
+#include <cstddef>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 void get_speed_data(SpeedData& data)
 {
     std::cout << "Enter speed data (space separated): ";
-    int input {};
-    std::cin >> input;
-    data.add_measurement(input);
+    std::string input {};
+    std::getline(std::cin, input);
+
+    std::istringstream stream {input};
+    int value {};
+    while (stream >> value)
+        data.add_measurement(value);
 }
 
 std::ostream& operator<<(std::ostream& out, const std::vector<int>& vect)
 {
     out << '[';
-    for (int i {}; i < vect.size(); ++i)
+    for (std::size_t i {}; i < vect.size(); ++i)
     {
         out << vect[i];
         if (i < vect.size()-1)
@@ -27,12 +33,20 @@ std::ostream& operator<<(std::ostream& out, const std::vector<int>& vect)
 
 void print_speed_data(const SpeedData& data)
 {
-    std::cout << "Minimum speed: " << data.min() << " km/h\n";
-    std::cout << "Maximum speed: " << data.max() << " km/h\n";
-    std::cout << "Average speed: " << data.avg() << " km/h\n";
-    std::cout << "Overspeed measurements: " << data.overspeed_data() << '\n';
-    std::cout << "Number of overspeed occurrences: " << data.num_overspeed() << '\n';
-    std::cout << "Average speed: " << data.avg_overspeed() << " km/h\n";
+    if (data.empty())
+    {
+        std::cout << "No data\n";
+        return;
+    }
+
+    std::cout << "Minimum speed: " << *data.min() << " km/h\n";
+    std::cout << "Maximum speed: " << *data.max() << " km/h\n";
+    std::cout << "Average speed: " << *data.avg() << " km/h\n";
+    std::cout << "Overspeed measurements: "
+              << data.overspeed_measurements() << '\n';
+    std::cout << "Number of overspeed occurrences: "
+              << data.overspeed_occurences() << '\n';
+    std::cout << "Average speed: " << *data.avg_overspeed() << " km/h\n";
 }
 
 int main()

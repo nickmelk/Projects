@@ -35,6 +35,11 @@ std::optional<double> SpeedData::avg() const
         / static_cast<double>(m_measurements.size());
 }
 
+int SpeedData::overspeed_occurences() const
+{
+    return m_overspeed_measurements.size();
+}
+
 std::optional<double> SpeedData::avg_overspeed() const
 {
     if (m_overspeed_measurements.empty())
@@ -42,4 +47,9 @@ std::optional<double> SpeedData::avg_overspeed() const
     return std::accumulate(m_overspeed_measurements.begin(),
         m_overspeed_measurements.end(), 0.0)
         / static_cast<double>(m_overspeed_measurements.size());
+}
+
+bool SpeedData::empty() const
+{
+    return m_measurements.empty();
 }

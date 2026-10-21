@@ -7,11 +7,17 @@ Some code rewritten from Python into C++
 Build the application using Bazel:
 
 ```
-bazel build //src:main
+bazel build //assessment-4/src:main
+```
+
+You can also build all targets at once:
+
+```
+bazel build //...
 ```
 
 Then you can launch it by running:
 
 ```
-./bazel-bin/src/main
+./bazel-bin/assessment-4/src/main
 ```

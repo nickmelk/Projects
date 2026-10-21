@@ -9,21 +9,18 @@
 class SpeedData
 {
 public:
-    const std::vector<int>& overspeed_data() const
+    const std::vector<int>& overspeed_measurements() const
     {
         return m_overspeed_measurements;
     }
 
-    int num_overspeed() const
-    {
-        return m_overspeed_measurements.size();
-    }
-
+    int overspeed_occurences() const;
     void add_measurement(int speed);
     std::optional<int> min() const;
     std::optional<int> max() const;
     std::optional<double> avg() const;
     std::optional<double> avg_overspeed() const;
+    bool empty() const;
 
 private:
     std::vector<int> m_measurements {};
