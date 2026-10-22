@@ -9,16 +9,8 @@
 class VehicleData
 {
 public:
-    int speed() const
-    {
-        return m_speed;
-    }
-
-    int temperature() const
-    {
-        return m_temperature;
-    }
-
+    int speed() const;
+    int temperature() const;
     bool has_overspeed() const;
     bool has_overheating() const;
 

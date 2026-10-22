@@ -8,7 +8,7 @@ template <typename T, std::size_t N>
 std::optional<T> calculate_average(const std::array<T, N>& values)
 {
     if (values.empty())
-        return {};
+        return std::nullopt;
     return std::accumulate(values.begin(), values.end(), 0)
         / values.size();
 }

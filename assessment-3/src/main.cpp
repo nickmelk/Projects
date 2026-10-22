@@ -42,11 +42,20 @@ void print_speed_data(const SpeedData& data)
     std::cout << "Minimum speed: " << *data.min() << " km/h\n";
     std::cout << "Maximum speed: " << *data.max() << " km/h\n";
     std::cout << "Average speed: " << *data.avg() << " km/h\n";
+
+    if (data.overspeed_empty())
+    {
+        std::cout << "No overspeed data\n";
+        return;
+    }
+
     std::cout << "Overspeed measurements: "
               << data.overspeed_measurements() << '\n';
     std::cout << "Number of overspeed occurrences: "
               << data.overspeed_occurences() << '\n';
-    std::cout << "Average speed: " << *data.avg_overspeed() << " km/h\n";
+    if (data.avg_overspeed())
+        std::cout << "Average overspeed: "
+              << *data.avg_overspeed() << " km/h\n";
 }
 
 int main()

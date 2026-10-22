@@ -1,7 +1,16 @@
 #include "vehicle_data.h"
 
 #include <iostream>
-#include <limits>
+
+int VehicleData::speed() const
+{
+    return m_speed;
+}
+
+int VehicleData::temperature() const
+{
+    return m_temperature;
+}
 
 bool VehicleData::has_overspeed() const
 {
@@ -23,7 +32,7 @@ std::optional<VehicleData> get_vehicle_data()
         || speed > constants::speed_max)
     {
         std::cout << "Invalid speed\n";
-        return {};
+        return std::nullopt;
     }
 
     std::cout << "Enter engine temperature in degrees C: ";
@@ -34,7 +43,7 @@ std::optional<VehicleData> get_vehicle_data()
         || temperature > constants::temp_max)
     {
         std::cout << "Invalid temperature\n";
-        return {};
+        return std::nullopt;
     }
 
     return VehicleData{speed, temperature};
