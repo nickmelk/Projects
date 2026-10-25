@@ -9,12 +9,12 @@
 class VehicleData
 {
 public:
+    static std::optional<VehicleData> get_vehicle_data(int speed,
+        int temperature);
     int speed() const;
     int temperature() const;
     bool has_overspeed() const;
     bool has_overheating() const;
-
-    friend std::optional<VehicleData> get_vehicle_data();
 
 private:
     VehicleData(int speed, int temperature)
@@ -26,7 +26,5 @@ private:
     int m_speed {};
     int m_temperature {};
 };
-
-std::optional<VehicleData> get_vehicle_data();
 
 #endif

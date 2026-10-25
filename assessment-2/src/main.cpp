@@ -3,6 +3,22 @@
 #include <iostream>
 #include <optional>
 
+int get_speed()
+{
+    std::cout << "Enter vehicle speed in km/h: ";
+    int speed {};
+    std::cin >> speed;
+    return speed;
+}
+
+int get_temperature()
+{
+    std::cout << "Enter engine temperature in degrees C: ";
+    int temperature {};
+    std::cin >> temperature;
+    return temperature;
+}
+
 void print_warning_summary(VehicleData data)
 {
     bool has_warnings {false};
@@ -32,7 +48,12 @@ void print_stats(VehicleData data)
 
 int main()
 {
-    std::optional<VehicleData> data {get_vehicle_data()};
+    int speed {get_speed()};
+    int temperature {get_temperature()};
+
+    std::optional<VehicleData> data {
+        VehicleData::get_vehicle_data(speed, temperature)
+    };
 
     if (data)
         print_stats(*data);
