@@ -1,9 +1,9 @@
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
 cc_test(
-    name = "test",
+    name = "vehicle_data_test",
     size = "small",
-    srcs = ["test.cpp"],
+    srcs = ["vehicle_data_test.cpp"],
     deps = [
         "//assessment-2/src:vehicle_data",
         "@googletest//:gtest",
