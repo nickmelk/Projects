@@ -1,9 +1,6 @@
 #ifndef VEHICLE_DATA_H
 #define VEHICLE_DATA_H
 
-#include "constants.h"
-
-#include <cstdint>
 #include <optional>
 
 class VehicleData

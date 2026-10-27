@@ -14,7 +14,7 @@ Output:
 Build the application using Bazel:
 
 ```
-bazel build //assessment-3/src:main
+bazel build //assessment-1-3/src:main
 ```
 
 You can also build all targets at once:
@@ -26,5 +26,5 @@ bazel build //...
 Then you can launch it by running:
 
 ```
-./bazel-bin/assessment-3/src/main
+./bazel-bin/assessment-1-3/src/main
 ```
