@@ -50,20 +50,20 @@ TYPED_TEST(SigProcTest, TestClamp)
 
 TYPED_TEST(SigProcTest, TestMin)
 {
-    EXPECT_EQ(sigproc::min(this->m_data.begin(), this->m_data.end()),
-        this->m_data.end());
+    EXPECT_FALSE(sigproc::min(this->m_data.begin(), this->m_data.end()));
 
     this->m_data = {50, 200, 100, 20, 150};
+    EXPECT_TRUE(sigproc::min(this->m_data.begin(), this->m_data.end()));
     EXPECT_EQ(*sigproc::min(this->m_data.begin(), this->m_data.end()),
         static_cast<TypeParam>(20));
 }
 
 TYPED_TEST(SigProcTest, TestMax)
 {
-    EXPECT_EQ(sigproc::max(this->m_data.begin(), this->m_data.end()),
-        this->m_data.end());
+    EXPECT_FALSE(sigproc::max(this->m_data.begin(), this->m_data.end()));
 
     this->m_data = {50, 200, 100, 20, 150};
+    EXPECT_TRUE(sigproc::max(this->m_data.begin(), this->m_data.end()));
     EXPECT_EQ(*sigproc::max(this->m_data.begin(), this->m_data.end()),
         static_cast<TypeParam>(200));
 }

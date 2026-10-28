@@ -1,11 +1,9 @@
 #ifndef SIGPROC_H
 #define SIGPROC_H
 
-#include <algorithm>
 #include <cstddef>
 #include <iterator>
 #include <optional>
-#include <numeric>
 
 namespace sigproc
 {
@@ -26,24 +24,43 @@ namespace sigproc
     }
 
     template <typename Iterator>
-    Iterator min(Iterator first, Iterator last)
+    auto min(Iterator first, Iterator last)
     {
-        return std::min_element(first, last);
+        using ValueType = typename std::iterator_traits<Iterator>::value_type;
+        std::optional<ValueType> val {};
+
+        for (; first != last; ++first)
+            if (!val.has_value() || *first < val)
+                val = *first;
+
+        return val;
     }
 
     template <typename Iterator>
-    Iterator max(Iterator first, Iterator last)
+    auto max(Iterator first, Iterator last)
     {
-        return std::max_element(first, last);
+        using ValueType = typename std::iterator_traits<Iterator>::value_type;
+        std::optional<ValueType> val {};
+        
+        for (; first != last; ++first)
+            if (!val.has_value() || *first > val)
+                val = *first;
+
+        return val;
     }
 
     template <typename Iterator>
     std::optional<double> avg(Iterator first, Iterator last)
     {
-        auto count {last - first};
+        std::size_t count {};
+        double sum {};
+
+        for (; first != last; ++first, ++count)
+            sum += *first;
+
         if (!count)
             return std::nullopt;
-        return std::accumulate(first, last, 0.0) / static_cast<double>(count);
+        return sum/count;
     }
 
     template <typename Iterator, typename Callable>
