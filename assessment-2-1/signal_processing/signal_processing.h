@@ -40,7 +40,7 @@ namespace signal_processing
     template <typename Iterator>
     std::optional<double> avg(Iterator first, Iterator last)
     {
-        int count {last - first};
+        auto count {last - first};
         if (!count)
             return std::nullopt;
         return std::accumulate(first, last, 0.0) / static_cast<double>(count);
