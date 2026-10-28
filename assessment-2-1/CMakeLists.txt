@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(signal_processing)
+project(sigproc)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,13 +17,13 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(
-    signal_processing_test
-    test/signal_processing_test.cpp
+    sigproc_test
+    test/sigproc_test.cpp
 )
 target_link_libraries(
-    signal_processing_test
+    sigproc_test
     GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(signal_processing_test)
+gtest_discover_tests(sigproc_test)

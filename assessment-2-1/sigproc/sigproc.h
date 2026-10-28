@@ -1,5 +1,5 @@
-#ifndef SIGNAL_PROCESSING_H
-#define SIGNAL_PROCESSING_H
+#ifndef SIGPROC_H
+#define SIGPROC_H
 
 #include <algorithm>
 #include <cstddef>
@@ -7,7 +7,7 @@
 #include <optional>
 #include <numeric>
 
-namespace signal_processing
+namespace sigproc
 {
     template <typename T>
     bool in_range(T value, T min, T max)
