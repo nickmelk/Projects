@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+#include <stdexcept>
 #include <vector>
 
 using VehicleSpeed = unsigned int;
@@ -31,6 +32,11 @@ TYPED_TEST(SigProcTest, TestInRange)
 
     this->m_value = 50;
     EXPECT_TRUE(sigproc::in_range(this->m_value, this->m_min, this->m_max));
+
+    this->m_min = 95;
+    this->m_max = 5;
+    EXPECT_THROW(sigproc::in_range(this->m_value, this->m_min, this->m_max),
+        std::logic_error);
 }
 
 TYPED_TEST(SigProcTest, TestClamp)
@@ -46,6 +52,11 @@ TYPED_TEST(SigProcTest, TestClamp)
     this->m_value = 50;
     EXPECT_EQ(sigproc::clamp(this->m_value, this->m_min, this->m_max),
         this->m_value);
+
+    this->m_min = 95;
+    this->m_max = 5;
+    EXPECT_THROW(sigproc::clamp(this->m_value, this->m_min, this->m_max),
+        std::logic_error);
 }
 
 TYPED_TEST(SigProcTest, TestMin)
@@ -56,6 +67,9 @@ TYPED_TEST(SigProcTest, TestMin)
     EXPECT_TRUE(sigproc::min(this->m_data.begin(), this->m_data.end()));
     EXPECT_EQ(*sigproc::min(this->m_data.begin(), this->m_data.end()),
         static_cast<TypeParam>(20));
+
+    EXPECT_THROW(*sigproc::min(this->m_data.end(), this->m_data.begin()),
+        std::logic_error);
 }
 
 TYPED_TEST(SigProcTest, TestMax)
@@ -66,6 +80,9 @@ TYPED_TEST(SigProcTest, TestMax)
     EXPECT_TRUE(sigproc::max(this->m_data.begin(), this->m_data.end()));
     EXPECT_EQ(*sigproc::max(this->m_data.begin(), this->m_data.end()),
         static_cast<TypeParam>(200));
+
+    EXPECT_THROW(*sigproc::max(this->m_data.end(), this->m_data.begin()),
+        std::logic_error);
 }
 
 TYPED_TEST(SigProcTest, TestAvg)
@@ -75,6 +92,9 @@ TYPED_TEST(SigProcTest, TestAvg)
     this->m_data = {50, 200, 100, 20, 150};
     EXPECT_TRUE(sigproc::avg(this->m_data.begin(), this->m_data.end()));
     EXPECT_EQ(*sigproc::avg(this->m_data.begin(), this->m_data.end()), 104.0);
+
+    EXPECT_THROW(*sigproc::avg(this->m_data.end(), this->m_data.begin()),
+        std::logic_error);
 }
 
 TYPED_TEST(SigProcTest, TestCountMatching)
@@ -97,4 +117,6 @@ TYPED_TEST(SigProcTest, TestCountMatching)
         [](TypeParam value){return value > static_cast<TypeParam>(0);}
     };
     EXPECT_EQ(sigproc::count_matching(begin, end, func3), this->m_data.size());
+
+    EXPECT_THROW(sigproc::count_matching(end, begin, func1), std::logic_error);
 }
