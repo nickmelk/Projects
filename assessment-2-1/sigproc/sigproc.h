@@ -12,7 +12,7 @@ namespace sigproc
     bool in_range(T value, T min, T max)
     {
         if (min > max)
-            throw std::logic_error("min is greater than max");
+            throw std::logic_error("Invalid range");
         return value >= min && value <= max;
     }
 
@@ -20,7 +20,7 @@ namespace sigproc
     T clamp(T value, T min, T max)
     {
         if (min > max)
-            throw std::logic_error("min is greater than max");
+            throw std::logic_error("Invalid range");
         if (value < min)
             return min;
         if (value > max)
@@ -34,9 +34,6 @@ namespace sigproc
         using ValueType = typename std::iterator_traits<Iterator>::value_type;
         std::optional<ValueType> val {};
 
-        if (first > last)
-            throw std::logic_error("first is greater than last");
-
         for (; first != last; ++first)
             if (!val.has_value() || *first < val)
                 val = *first;
@@ -49,9 +46,6 @@ namespace sigproc
     {
         using ValueType = typename std::iterator_traits<Iterator>::value_type;
         std::optional<ValueType> val {};
-
-        if (first > last)
-            throw std::logic_error("first is greater than last");
         
         for (; first != last; ++first)
             if (!val.has_value() || *first > val)
@@ -66,9 +60,6 @@ namespace sigproc
         std::size_t count {};
         double sum {};
 
-        if (first > last)
-            throw std::logic_error("first is greater than last");
-
         for (; first != last; ++first, ++count)
             sum += *first;
 
@@ -77,15 +68,12 @@ namespace sigproc
         return sum/count;
     }
 
-    template <typename Iterator, typename Callable>
-    std::size_t count_matching(Iterator first, Iterator last, Callable func)
+    template <typename Iterator, typename Predicate>
+    std::size_t count_matching(Iterator first, Iterator last, Predicate pred)
     {
-        if (first > last)
-            throw std::logic_error("first is greater than last");
-
         std::size_t count {};
         for (; first != last; ++first)
-            if (func(*first))
+            if (pred(*first))
                 ++count;
         return count;
     }

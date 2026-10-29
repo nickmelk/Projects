@@ -11,112 +11,144 @@ using CoolantTemperature = int;
 using BatteryVoltage = float;
 
 template <typename T>
-class SigProcTest : public testing::Test
+class ScalarDataTest : public testing::Test
 {
 protected:
-    T m_value {};
     T m_min {5};
     T m_max {95};
-    std::vector<T> m_data {};
+    T m_in {50};
+    T m_out_min {0};
+    T m_out_max {100};
+};
+
+template <typename T>
+class VectorDataTest : public testing::Test
+{
+protected:
+    std::vector<T> m_empty {};
+    std::vector<T> m_filled {0, 20, 40, 60, 80, 100};
+    T m_min {0};
+    T m_max {100};
+    T m_avg {50};
 };
 
 using SignalTypes = testing::Types<VehicleSpeed, EngineRPM, CoolantTemperature,
     BatteryVoltage>;
 
-TYPED_TEST_SUITE(SigProcTest, SignalTypes);
+TYPED_TEST_SUITE(ScalarDataTest, SignalTypes);
+TYPED_TEST_SUITE(VectorDataTest, SignalTypes);
 
-TYPED_TEST(SigProcTest, TestInRange)
+TYPED_TEST(ScalarDataTest, TestInRangeValueOutOfRange)
 {
-    this->m_value = 100;
-    EXPECT_FALSE(sigproc::in_range(this->m_value, this->m_min, this->m_max));
+    EXPECT_FALSE(sigproc::in_range(this->m_out_min, this->m_min, this->m_max));
+}
 
-    this->m_value = 50;
-    EXPECT_TRUE(sigproc::in_range(this->m_value, this->m_min, this->m_max));
+TYPED_TEST(ScalarDataTest, TestInRangeValueInRange)
+{
+    EXPECT_TRUE(sigproc::in_range(this->m_in, this->m_min, this->m_max));
+}
 
-    this->m_min = 95;
-    this->m_max = 5;
-    EXPECT_THROW(sigproc::in_range(this->m_value, this->m_min, this->m_max),
+TYPED_TEST(ScalarDataTest, TestInRangeMinMaxSwapped)
+{
+    EXPECT_THROW(sigproc::in_range(this->m_in, this->m_max, this->m_min),
         std::logic_error);
 }
 
-TYPED_TEST(SigProcTest, TestClamp)
+TYPED_TEST(ScalarDataTest, TestClampValueLessThanMin)
 {
-    this->m_value = 0;
-    EXPECT_EQ(sigproc::clamp(this->m_value, this->m_min, this->m_max),
+    EXPECT_EQ(sigproc::clamp(this->m_out_min, this->m_min, this->m_max),
         this->m_min);
+}
 
-    this->m_value = 100;
-    EXPECT_EQ(sigproc::clamp(this->m_value, this->m_min, this->m_max),
+TYPED_TEST(ScalarDataTest, TestClampValueGreaterThanMax)
+{
+    EXPECT_EQ(sigproc::clamp(this->m_out_max, this->m_min, this->m_max),
         this->m_max);
+}
 
-    this->m_value = 50;
-    EXPECT_EQ(sigproc::clamp(this->m_value, this->m_min, this->m_max),
-        this->m_value);
+TYPED_TEST(ScalarDataTest, TestClampValueInRange)
+{
+    EXPECT_EQ(sigproc::clamp(this->m_in, this->m_min, this->m_max),
+        this->m_in);
+}
 
-    this->m_min = 95;
-    this->m_max = 5;
-    EXPECT_THROW(sigproc::clamp(this->m_value, this->m_min, this->m_max),
+TYPED_TEST(ScalarDataTest, TestClampMinMaxSwapped)
+{
+    EXPECT_THROW(sigproc::clamp(this->m_in, this->m_max, this->m_min),
         std::logic_error);
 }
 
-TYPED_TEST(SigProcTest, TestMin)
+TYPED_TEST(VectorDataTest, TestMinEmptySequence)
 {
-    EXPECT_FALSE(sigproc::min(this->m_data.begin(), this->m_data.end()));
-
-    this->m_data = {50, 200, 100, 20, 150};
-    EXPECT_TRUE(sigproc::min(this->m_data.begin(), this->m_data.end()));
-    EXPECT_EQ(*sigproc::min(this->m_data.begin(), this->m_data.end()),
-        static_cast<TypeParam>(20));
-
-    EXPECT_THROW(*sigproc::min(this->m_data.end(), this->m_data.begin()),
-        std::logic_error);
+    EXPECT_FALSE(sigproc::min(this->m_empty.begin(), this->m_empty.end()));
 }
 
-TYPED_TEST(SigProcTest, TestMax)
+TYPED_TEST(VectorDataTest, TestMinFilledSequence)
 {
-    EXPECT_FALSE(sigproc::max(this->m_data.begin(), this->m_data.end()));
-
-    this->m_data = {50, 200, 100, 20, 150};
-    EXPECT_TRUE(sigproc::max(this->m_data.begin(), this->m_data.end()));
-    EXPECT_EQ(*sigproc::max(this->m_data.begin(), this->m_data.end()),
-        static_cast<TypeParam>(200));
-
-    EXPECT_THROW(*sigproc::max(this->m_data.end(), this->m_data.begin()),
-        std::logic_error);
+    auto result {sigproc::min(this->m_filled.begin(), this->m_filled.end())};
+    EXPECT_TRUE(result);
+    EXPECT_EQ(*result, this->m_min);
 }
 
-TYPED_TEST(SigProcTest, TestAvg)
+TYPED_TEST(VectorDataTest, TestMaxEmptySequence)
 {
-    EXPECT_FALSE(sigproc::avg(this->m_data.begin(), this->m_data.end()));
-
-    this->m_data = {50, 200, 100, 20, 150};
-    EXPECT_TRUE(sigproc::avg(this->m_data.begin(), this->m_data.end()));
-    EXPECT_EQ(*sigproc::avg(this->m_data.begin(), this->m_data.end()), 104.0);
-
-    EXPECT_THROW(*sigproc::avg(this->m_data.end(), this->m_data.begin()),
-        std::logic_error);
+    EXPECT_FALSE(sigproc::max(this->m_empty.begin(), this->m_empty.end()));
 }
 
-TYPED_TEST(SigProcTest, TestCountMatching)
+TYPED_TEST(VectorDataTest, TestMaxFilledSequence)
 {
-    this->m_data = {50, 200, 100, 20, 150};
-    auto begin {this->m_data.begin()};
-    auto end {this->m_data.end()};
+    auto result {sigproc::max(this->m_filled.begin(), this->m_filled.end())};
+    EXPECT_TRUE(result);
+    EXPECT_EQ(*result, this->m_max);
+}
 
-    auto func1 {
-        [](TypeParam value){return value > static_cast<TypeParam>(100);}
+TYPED_TEST(VectorDataTest, TestAvgEmptySequence)
+{
+    EXPECT_FALSE(sigproc::avg(this->m_empty.begin(), this->m_empty.end()));
+}
+
+TYPED_TEST(VectorDataTest, TestAvgFilledSequence)
+{
+    auto result {sigproc::avg(this->m_filled.begin(), this->m_filled.end())};
+    EXPECT_TRUE(result);
+    EXPECT_EQ(*result, this->m_avg);
+}
+
+TYPED_TEST(VectorDataTest, TestCountMatchingSomethingMatched)
+{
+    auto pred {
+        [](TypeParam value){return value > static_cast<TypeParam>(50);}
     };
-    EXPECT_EQ(sigproc::count_matching(begin, end, func1), 2);
+    auto result {
+        sigproc::count_matching(
+            this->m_filled.begin(), this->m_filled.end(), pred
+        )
+    };
+    EXPECT_EQ(result, 3);
+}
 
-    auto func2 {
+TYPED_TEST(VectorDataTest, TestCountMatchingNothingMatched)
+{
+    auto pred {
         [](TypeParam value){return value < static_cast<TypeParam>(0);}
     };
-    EXPECT_EQ(sigproc::count_matching(begin, end, func2), 0);
-
-    auto func3 {
-        [](TypeParam value){return value > static_cast<TypeParam>(0);}
+    auto result {
+        sigproc::count_matching(
+            this->m_filled.begin(), this->m_filled.end(), pred
+        )
     };
-    EXPECT_EQ(sigproc::count_matching(begin, end, func3), this->m_data.size());
+    EXPECT_EQ(result, 0);
+}
 
-    EXPECT_THROW(sigproc::count_matching(end, begin, func1), std::logic_error);
+TYPED_TEST(VectorDataTest, TestCountMatchingEverythingMatched)
+{
+    auto pred {
+        [](TypeParam value){return value >= static_cast<TypeParam>(0);}
+    };
+    auto result {
+        sigproc::count_matching(
+            this->m_filled.begin(), this->m_filled.end(), pred
+        )
+    };
+    EXPECT_EQ(result, this->m_filled.size());
 }

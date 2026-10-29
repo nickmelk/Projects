@@ -11,7 +11,7 @@ class SignalValidatorTest : public testing::Test
 {
 protected:
     T m_value {};
-    SignalValidator<T, 5L, 95L> m_validator {};
+    SignalValidator<T, 5, 95> m_validator {};
 };
 
 using SignalTypes = testing::Types<VehicleSpeed, EngineRPM,
@@ -19,11 +19,14 @@ using SignalTypes = testing::Types<VehicleSpeed, EngineRPM,
 
 TYPED_TEST_SUITE(SignalValidatorTest, SignalTypes);
 
-TYPED_TEST(SignalValidatorTest, TestValidate)
+TYPED_TEST(SignalValidatorTest, TestValidateFalse)
 {
     this->m_value = 100;
     EXPECT_FALSE(this->m_validator.validate(this->m_value));
+}
 
+TYPED_TEST(SignalValidatorTest, TestValidateTrue)
+{
     this->m_value = 50;
     EXPECT_TRUE(this->m_validator.validate(this->m_value));
 }

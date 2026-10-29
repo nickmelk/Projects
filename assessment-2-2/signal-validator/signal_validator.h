@@ -1,7 +1,7 @@
 #ifndef SIGNAL_VALIDATOR_H
 #define SIGNAL_VALIDATOR_H
 
-template <typename T, long Min, long Max>
+template <typename T, T Min, T Max>
 class SignalValidator
 {
 public:
