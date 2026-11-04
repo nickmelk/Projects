@@ -4,14 +4,36 @@
 #include <iostream>
 #include <fstream>
 
-void EventLogger::log(const DiagnosticEvent& event) const
+EventLogger::EventLogger(const char* log_file)
+    : m_log_file {log_file}
 {
-    std::cout << constants::warning_msg << ": " << event.message() << '\n';
+
 }
 
-void EventLogger::flog(const DiagnosticEvent& event, const char* file) const
+EventLogger::EventLogger(EventLogger&& other) noexcept
+    : m_log_file {std::move(other.m_log_file)}
 {
-    std::ofstream out_file {file};
-    out_file << constants::warning_msg << ": " << event.message() << '\n';
-    out_file.close();
+
+}
+
+EventLogger& EventLogger::operator=(EventLogger&& other) noexcept
+{
+    if (this != &other)
+        m_log_file = std::move(other.m_log_file);
+    return *this;
+}
+
+EventLogger::~EventLogger()
+{
+    m_log_file.close();
+}
+
+void EventLogger::log(std::string_view msg) const
+{
+    std::cout << constants::warning_level << ": " << msg << '\n';
+}
+
+void EventLogger::flog(std::string_view msg)
+{
+    m_log_file << constants::warning_level << ": " << msg << '\n';
 }

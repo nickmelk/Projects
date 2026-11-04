@@ -10,10 +10,13 @@ namespace constants
     constexpr double battery_voltage_limit {10.5};
     constexpr float oil_pressure_limit {1.0};
 
-    constexpr std::string_view info_msg {"[INFO]"};
-    constexpr std::string_view warning_msg {"[WARNING]"};
-    constexpr std::string_view error_msg {"[ERROR]"};
-    // constexpr int events_max {50};
+    constexpr std::string_view msg_engine_overheat {"Engine overheat"};
+    constexpr std::string_view msg_engine_overspeed {"Engine overspeed"};
+    constexpr std::string_view msg_low_battery_voltage {"Low battery voltage"};
+    constexpr std::string_view msg_low_oil_pressure {"Low oil pressure"};
+
+    constexpr const char* log_file {"diagnostic.log"};
+    constexpr std::string_view warning_level {"[WARNING]"};
 }
 
 #endif
