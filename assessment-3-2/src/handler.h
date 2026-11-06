@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <string>
 
-class Handler
+class Handler final
 {
 public:
     explicit Handler(const std::string& path);
@@ -14,11 +14,20 @@ public:
     Handler& operator=(Handler&& other) noexcept;
     ~Handler();
 
-    void write(const std::string& text);
-    void close();
+    std::FILE* file() const;
 
 private:
     std::FILE* file_ {nullptr};
+};
+
+class FileWriter
+{
+public:
+    explicit FileWriter(Handler&& handler);
+    void write(const std::string& text) const;
+
+private:
+    Handler m_handler {"test.txt"};
 };
 
 #endif

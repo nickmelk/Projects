@@ -1,12 +1,10 @@
 #include "handler.h"
 
-#include <memory>
-
 int main()
 {
-    auto file_handler = std::make_shared<Handler>("test.txt");
+    FileWriter writer {Handler {"test.txt"}};
 
-    file_handler->write("test");
+    writer.write("test");
 
     return 0;
 }

@@ -24,30 +24,31 @@ Handler::Handler(Handler&& other) noexcept
 Handler& Handler::operator=(Handler&& other) noexcept
 {
     if (this != &other)
-    {
-        close();
-        file_ = other.file_;
-        other.file_ = nullptr;
-    }
+        std::swap(file_, other.file_);
     return *this;
 }
 
 Handler::~Handler()
 {
-    close();
+    if (file_)
+    {
+        std::fclose(file_);
+        file_ = nullptr;
+    }
 }
 
-void Handler::write(const std::string& text)
+std::FILE* Handler::file() const
 {
-    if (!file_)
-        return;
-    std::fprintf(file_, "%s\n", text.c_str());
+    return file_;
 }
 
-void Handler::close()
+FileWriter::FileWriter(Handler&& handler)
+    : m_handler {std::move(handler)}
 {
-    if (!file_)
-        return;
-    std::fclose(file_);
-    file_ = nullptr;
+
+}
+
+void FileWriter::write(const std::string& text) const
+{
+    std::fprintf(m_handler.file(), "%s\n", text.c_str());
 }

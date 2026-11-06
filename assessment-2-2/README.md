@@ -2,8 +2,8 @@
 
 A generic signal validator that provides the following functionality:
 
-`SignalValidator<T, Min, Max>` - a generic signal validator used to validate values of type `T`
-`SignalValidator<T, Min, Max>::validate(value)` - checks whether `value` is within the range `[Min, Max]`
+- `SignalValidator<T, Min, Max>` - a generic signal validator used to validate values of type `T`
+- `SignalValidator<T, Min, Max>::validate(value)` - checks whether `value` is within the range `[Min, Max]`
 
 ## Tests
 
