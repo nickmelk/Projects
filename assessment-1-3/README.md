@@ -17,14 +17,14 @@ Build the application using Bazel:
 bazel build //assessment-1-3/src:main
 ```
 
-You can also build all targets at once:
-
-```
-bazel build //...
-```
-
 Then you can launch it by running:
 
 ```
 ./bazel-bin/assessment-1-3/src/main
+```
+
+Alternatively, build and run by using the following command:
+
+```
+bazel run //assessment-1-3/src:main
 ```
