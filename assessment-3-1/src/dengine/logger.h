@@ -6,28 +6,32 @@
 #include <fstream>
 #include <string_view>
 
-class ConsoleLogger
-{
-    virtual void log(std::string_view msg) const = 0;
-};
-
-class FileLogger
-{
-    virtual void flog(std::string_view msg) = 0;
-};
-
-class EventLogger : public ConsoleLogger, public FileLogger
+class LoggerInterface
 {
 public:
-    EventLogger(const char* log_file = constants::log_file);
-    EventLogger(const EventLogger& other) = delete;
-    EventLogger& operator=(const EventLogger& other) = delete;
-    EventLogger(EventLogger&&) noexcept;
-    EventLogger& operator=(EventLogger&&) noexcept;
-    ~EventLogger();
+    virtual ~LoggerInterface() = default;
+    virtual void log(std::string_view msg) = 0;
+};
 
-    void log(std::string_view msg) const override;
-    void flog(std::string_view msg) override;
+class ConsoleLogger : public LoggerInterface
+{
+public:
+    ~ConsoleLogger() override = default;
+    void log(std::string_view msg) override;
+};
+
+class FileLogger : public LoggerInterface
+{
+public:
+    explicit FileLogger(const char* log_file = constants::log_file);
+    FileLogger(const FileLogger& other) = delete;
+    FileLogger& operator=(const FileLogger& other) = delete;
+    FileLogger(FileLogger&&) noexcept;
+    FileLogger& operator=(FileLogger&&) noexcept;
+    ~FileLogger() override = default;
+
+    void log(std::string_view msg) override;
+
 private:
     std::ofstream m_log_file {};
 };

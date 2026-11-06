@@ -2,38 +2,36 @@
 #include "logger.h"
 
 #include <iostream>
-#include <fstream>
+#include <stdexcept>
 
-EventLogger::EventLogger(const char* log_file)
-    : m_log_file {log_file}
+void ConsoleLogger::log(std::string_view msg)
 {
-
+    std::cerr << constants::warning_level << ": " << msg << '\n';
 }
 
-EventLogger::EventLogger(EventLogger&& other) noexcept
+FileLogger::FileLogger(const char* log_file)
+{
+    if (!log_file)
+        throw std::invalid_argument("Empty path");
+    m_log_file.open(log_file, std::ios::out);
+    if (!m_log_file)
+        throw std::runtime_error("Failed to open file");
+}
+
+FileLogger::FileLogger(FileLogger&& other) noexcept
     : m_log_file {std::move(other.m_log_file)}
 {
 
 }
 
-EventLogger& EventLogger::operator=(EventLogger&& other) noexcept
+FileLogger& FileLogger::operator=(FileLogger&& other) noexcept
 {
     if (this != &other)
         m_log_file = std::move(other.m_log_file);
     return *this;
 }
 
-EventLogger::~EventLogger()
-{
-    m_log_file.close();
-}
-
-void EventLogger::log(std::string_view msg) const
-{
-    std::cout << constants::warning_level << ": " << msg << '\n';
-}
-
-void EventLogger::flog(std::string_view msg)
+void FileLogger::log(std::string_view msg)
 {
     m_log_file << constants::warning_level << ": " << msg << '\n';
 }
