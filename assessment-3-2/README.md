@@ -1,6 +1,6 @@
 ## Description
 
-A RAII wrapper for C file handler (`std::FILE*`).
+A RAII wrapper for a C file handler (`std::FILE*`).
 
 ## Build
 

@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+message TemperatureReading {
+    int32 value = 1;
+    optional string info = 2;
+}
+
+message RPMReading {
+    uint32 value = 1;
+    optional string info = 2;
+}
+
+message VoltageReading {
+    float value = 1;
+    optional string info = 2;
+}
+
+message SpeedReading {
+    uint32 value = 1;
+    optional string info = 2;
+}
