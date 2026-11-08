@@ -4,6 +4,8 @@ A vehicle diagnostic engine capable of evaluating different sensor values using 
 
 `DiagnosticEngine` is the core component of the application. It receives a reading from a specific vehicle sensor and evaluates it based on a provided `DiagnoticRule`. A rule can be generated with the help of `RuleGenerator`, which takes the rule itself as a function and a reference to logging interface (console by default). Based on the result from the rule the engine generates corresponding events with information being written to the specified logging interface.
 
+![UML Diagram](diagram.png)
+
 ## Build
 
 Build the application using Bazel:

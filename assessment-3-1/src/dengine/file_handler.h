@@ -9,8 +9,8 @@ public:
     explicit FileHandler(const char* log_file);
     FileHandler(const FileHandler& other) = delete;
     FileHandler& operator=(const FileHandler& other) = delete;
-    FileHandler(FileHandler&&) noexcept;
-    FileHandler& operator=(FileHandler&&) noexcept;
+    FileHandler(FileHandler&& other) noexcept;
+    FileHandler& operator=(FileHandler&& other) noexcept;
     ~FileHandler() = default;
 
     std::ofstream& log_file();

@@ -1,0 +1,69 @@
+@startuml diagram
+
+class DiagnosticEngine {
+    + void evaluate(SensorReading<T> reading, DiagnosticRule<Pred> rule)
+}
+
+class DiagnosticRule<Pred> {
+    + DiagnosticRule(int id, Pred pred, std::string_view message,
+        LoggerInterface& logger)
+    + std::string_view message() const
+    + LoggerInterface& logger() const
+    + bool evaluate(T value) const
+    --
+    - int m_id
+    - Pred m_pred
+    - std::string_view m_message
+    - LoggerInterface& m_logger
+}
+
+class RuleGenerator {
+    + DiagnosticRule<Pred> generate(Pred pred, std::string_view message,
+        LoggerInterface& logger)
+    --
+    - int m_id_counter
+}
+
+class FileHandler {
+    + FileHandler(const char* log_file)
+    + FileHandler(FileHandler&& other)
+    + FileHandler& operator=(FileHandler&& other)
+    + std::ofstream& log_file()
+    --
+    - std::ofstream m_log_file
+}
+
+abstract class LoggerInterface {
+    + void log(std::string_view msg)
+}
+
+class ConsoleLogger {
+    + void log(std::string_view msg)
+}
+
+class FileLogger {
+    + void log(std::string_view msg)
+    --
+    - FileHandler m_handler
+}
+
+enum SensorReadingType {
+    unknown
+    coolant_temperature
+    engine_rpm
+    battery_voltage
+    oil_pressure
+}
+
+struct SensorReading<T> {
+    + T value
+    + SensorReadingType type
+}
+
+LoggerInterface ..|> ConsoleLogger
+LoggerInterface ..|> FileLogger
+FileLogger --* FileHandler
+DiagnosticRule -o LoggerInterface
+SensorReading --* SensorReadingType
+
+@enduml
