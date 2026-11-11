@@ -1,21 +1,46 @@
 syntax = "proto3";
 
 message TemperatureReading {
+    enum Type {
+        ENGINE_TEMPERATURE = 0;
+        GEARBOX_TEMPERATURE = 1;
+        COOLANT_TEMPERATURE = 2;
+    }
+
     int32 value = 1;
-    optional string info = 2;
+    Type type = 2;
 }
 
 message RPMReading {
+    enum Type {
+        RPM_RAW = 0;
+        RPM_NORMALIZED = 1;
+    }
+
     uint32 value = 1;
-    optional string info = 2;
+    Type type = 2;
 }
 
 message VoltageReading {
+    enum Type {
+        BATTERY_VOLTAGE = 0;
+        CAN_VOLTAGE = 1;
+    }
+
     float value = 1;
-    optional string info = 2;
+    Type type = 2;
 }
 
 message SpeedReading {
     uint32 value = 1;
-    optional string info = 2;
+}
+
+message ReadingMessage {
+    optional string message = 1;
+    oneof reading {
+        TemperatureReading temperature_reading = 2;
+        RPMReading rpm_reading = 3;
+        VoltageReading voltage_reading = 4;
+        SpeedReading speed_reading = 5;
+    }
 }
