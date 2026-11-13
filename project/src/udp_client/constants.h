@@ -5,7 +5,7 @@
 
 namespace constants
 {
-    constexpr unsigned int ip_address {0x7f000001}; // 127.0.0.1
+    constexpr std::string_view ip_address {"127.0.0.1"};
     constexpr int port {5005};
     constexpr int buffer_size {1024};
 

@@ -3,18 +3,20 @@
 #include <unistd.h>
 #include <sys/socket.h>
 
+#include <iostream>
 #include <utility>
-#include <stdexcept>
 
 SocketHandler::SocketHandler()
     : m_socket {::socket(AF_INET, SOCK_DGRAM, 0)}
 {
     if (m_socket < 0)
-        throw std::runtime_error("Failed to open a socket");
+        std::cerr << "Failed to create a socket\n";
 }
 
 SocketHandler::~SocketHandler()
 {
+    if (m_socket < 0)
+        return;
     close(m_socket);
 }
 
