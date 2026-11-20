@@ -1,11 +1,14 @@
 #include "constants.h"
-#include "packet_data.h"
-#include "socket_address.h"
-#include "udp_client.h"
+#include "message_data/message_data.h"
+#include "socket_address/socket_address.h"
+#include "udp_client/udp_client.h"
 #include "gen/schema.pb.h"
 
+#include <chrono>
 #include <iostream>
 #include <iomanip>
+
+using namespace std::literals::chrono_literals;
 
 template <typename T>
 void log(const T& reading, std::string_view message, std::size_t bytes)
@@ -43,7 +46,7 @@ void parse_message(const ReadingMessage& message)
     }
 }
 
-void parse_data(const PacketData& data)
+void parse_data(const MessageData& data)
 {
     ReadingMessage message {};
     if (message.ParseFromArray(data.buffer.data(), data.bytes))
@@ -62,7 +65,8 @@ int main()
     while (client)
     {
         client.receive();
-        parse_data(client.data());
+        // std::cout << "Thread: " << std::this_thread::get_id() << " (receiver)\n";
+        std::this_thread::sleep_for(1s);
     }
 
     return 1;

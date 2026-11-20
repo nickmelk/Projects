@@ -87,7 +87,7 @@ def mainloop(udp_socket):
         print(f"{get_value(message):10.4g}", end="")
         print(f"{message.message if message.message else "":>25}")
 
-        time.sleep(1)
+        time.sleep(random.uniform(0.1, 1.0))
 
 
 def main():

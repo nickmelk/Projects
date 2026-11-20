@@ -1,14 +1,16 @@
-#include "constants.h"
-#include "packet_data.h"
 #include "udp_client.h"
+
+#include "../constants.h"
+#include "../message_data/message_data.h"
+#include "../message_queue/message_queue.h"
 
 #include <sys/socket.h>
 
 #include <iostream>
 
-const PacketData& UDPClient::data() const
+const MessageQueue& UDPClient::queue() const
 {
-    return m_data;
+    return m_queue;
 }
 
 void UDPClient::bind(const SocketAddress& address)
@@ -24,13 +26,16 @@ void UDPClient::bind(const SocketAddress& address)
 
 void UDPClient::receive()
 {
-    m_data.bytes = recv(m_handler.socket(), m_data.buffer.data(),
+    MessageData data {};
+    data.bytes = recv(m_handler.socket(), data.buffer.data(),
         constants::buffer_size, 0);
-    if (m_data.bytes < 0)
+    if (data.bytes < 0)
     {
         std::cerr << "Failed to receive a packet\n";
         m_ok = false;
     }
+    else
+        m_queue.push(data);
 }
 
 UDPClient::operator bool() const
