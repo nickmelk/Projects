@@ -1,8 +1,8 @@
 #ifndef LOGGER_INTERFACE_H
 #define LOGGER_INTERFACE_H
 
-#include "constants.h"
-#include "file_handler.h"
+#include "constants.hpp"
+#include "file_handler.hpp"
 
 #include <string_view>
 

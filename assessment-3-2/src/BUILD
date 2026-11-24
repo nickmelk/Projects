@@ -5,7 +5,7 @@ cc_binary(
     srcs = [
         "main.cpp",
         "handler.cpp",
-        "handler.h",
+        "handler.hpp",
     ],
     copts = [
         "-Wall",

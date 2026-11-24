@@ -1,7 +1,7 @@
-#include "dengine/constants.h"
-#include "dengine/diagnostic_engine.h"
-#include "dengine/diagnostic_rule.h"
-#include "dengine/sensor_reading.h"
+#include "dengine/constants.hpp"
+#include "dengine/diagnostic_engine.hpp"
+#include "dengine/diagnostic_rule.hpp"
+#include "dengine/sensor_reading.hpp"
 
 int main()
 {

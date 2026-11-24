@@ -6,8 +6,8 @@ cc_library(
         "vehicle_data.cpp",
     ],
     hdrs = [
-        "constants.h",
-        "vehicle_data.h",
+        "constants.hpp",
+        "vehicle_data.hpp",
     ],
     copts = [
         "-Wall",

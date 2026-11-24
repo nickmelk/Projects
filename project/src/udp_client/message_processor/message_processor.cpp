@@ -1,33 +1,61 @@
-#include "message_processor.h"
+#include "message_processor.hpp"
 
-#include "../message_queue/message_queue.h"
+#include "../constants.hpp"
+#include "../gen/schema.pb.h"
+#include "../message/message.hpp"
+#include "../message_queue/message_queue.hpp"
 
+#include <functional>
 #include <iostream>
-#include <thread>
+#include <optional>
 
-void parse_data(const MessageData& data);
-
-void process_message(MessageQueue& queue)
+MessageProcessor::MessageProcessor(MessageQueue& queue, const bool& status)
+    : m_handler {&MessageProcessor::process, this, std::ref(queue), std::ref(status)}
 {
-    while (running)
+
+}
+
+void MessageProcessor::parse_message(const Message& message) const
+{
+    ReadingMessage reading {};
+    if (reading.ParseFromArray(message.buffer.data(), message.bytes))
+        parse_reading(reading);
+    else
+        std::cerr << "Failed to parse a message\n";
+}
+
+void MessageProcessor::parse_reading(const ReadingMessage& reading) const
+{
+    switch (reading.reading_case())
     {
-        parse_data(queue.pop());
-        // std::cout << "Thread: " << std::this_thread::get_id() << " (processor)\n";
+    case ReadingMessage::kTemperatureReading:
+        log(reading.temperature_reading(), reading.message(),
+            reading.ByteSizeLong());
+        break;
+    case ReadingMessage::kRpmReading:
+        log(reading.rpm_reading(), reading.message(),
+            reading.ByteSizeLong());
+        break;
+    case ReadingMessage::kVoltageReading:
+        log(reading.voltage_reading(), reading.message(),
+            reading.ByteSizeLong());
+        break;
+    case ReadingMessage::kSpeedReading:
+        log(reading.speed_reading(), reading.message(),
+            reading.ByteSizeLong());
+        break;
+    default:
+        log(reading.temperature_reading(), constants::unknown_reading,
+            reading.ByteSizeLong());
+        break;
     }
 }
 
-void parse_data(const MessageData& data);
-
-ThreadHandler::~ThreadHandler()
+void MessageProcessor::process(MessageQueue& queue, const bool& status) const
 {
-    running = false;
-    if (!m_thread.joinable())
-        return;
-    m_thread.join();
-}
-
-MessageProcessor::MessageProcessor(MessageQueue& queue)
-    : m_queue {queue}, m_handler {[this]() {process_message(m_queue);}}
-{
-    
+    while (status)
+    {
+        if (std::optional<Message> message {queue.pop()}; message)
+            parse_message(*message);
+    }
 }

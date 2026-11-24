@@ -1,4 +1,4 @@
-#include "../signal-validator/signal_validator.h"
+#include "../signal-validator/signal_validator.hpp"
 
 #include <gtest/gtest.h>
 

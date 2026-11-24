@@ -5,8 +5,8 @@ cc_binary(
     srcs = [
         "main.cpp",
         "speed_data.cpp",
-        "constants.h",
-        "speed_data.h",
+        "constants.hpp",
+        "speed_data.hpp",
     ],
     copts = [
         "-Wall",

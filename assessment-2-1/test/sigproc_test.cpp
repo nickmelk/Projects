@@ -1,4 +1,4 @@
-#include "../sigproc/sigproc.h"
+#include "../sigproc/sigproc.hpp"
 
 #include <gtest/gtest.h>
 

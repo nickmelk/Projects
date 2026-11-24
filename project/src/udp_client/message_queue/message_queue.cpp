@@ -1,49 +1,36 @@
-#include "message_queue.h"
+#include "message_queue.hpp"
 
-#include "../constants.h"
-#include "../message_data/message_data.h"
+#include "../message/message.hpp"
 
-#include <mutex>
 #include <iostream>
+#include <mutex>
+#include <optional>
 
-void parse_data(const MessageData& data);
-
-void MessageQueue::push(const MessageData& data)
+void MessageQueue::push(const Message& message)
 {
-    std::unique_lock<std::mutex> guard {m_mutex};
-    if (full())
+    std::unique_lock<std::mutex> lock {m_mutex};
+    if (m_queue.size() >= max_size)
         m_queue.pop();
-    m_queue.push(data);
-    // info();
-    guard.unlock();
-    m_var.notify_one();
+    m_queue.push(message);
+    lock.unlock();
+    m_cv.notify_one();
 }
 
-MessageData MessageQueue::pop()
+std::optional<Message> MessageQueue::pop()
 {
-    std::unique_lock<std::mutex> guard {m_mutex};
-    m_var.wait(guard, [this]() {return !empty();});
-    MessageData data {m_queue.front()};
+    std::unique_lock<std::mutex> lock {m_mutex};
+    m_cv.wait(lock, [this]() {return !m_queue.empty();});
+    if (!m_queue.size())
+    {
+        std::cerr << "Queue is empty\n";
+        return std::nullopt;
+    }
+    Message message {m_queue.front()};
     m_queue.pop();
-    info();
-    return data;
+    return message;
 }
 
 bool MessageQueue::empty() const
 {
     return m_queue.empty();
-}
-
-bool MessageQueue::full() const
-{
-    return m_queue.size() >= constants::queue_size;
-}
-
-void MessageQueue::info() const
-{
-    std::cout << "Queue size: " << m_queue.size() << "\n";
-    // std::cout << "Oldest message: ";
-    // parse_data(m_queue.front());
-    // std::cout << "Newest message: ";
-    // parse_data(m_queue.back());
 }

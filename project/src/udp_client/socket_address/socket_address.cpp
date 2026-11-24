@@ -1,6 +1,9 @@
-#include "socket_address.h"
+#include "socket_address.hpp"
 
 #include <arpa/inet.h>
+#include <netinet/in.h>
+
+#include <string_view>
 
 SocketAddress::SocketAddress(std::string_view address, int port)
 {

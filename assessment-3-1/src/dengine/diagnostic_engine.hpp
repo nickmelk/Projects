@@ -1,8 +1,8 @@
 #ifndef DIAGNOSTIC_ENGINE_H
 #define DIAGNOSTIC_ENGINE_H
 
-#include "diagnostic_rule.h"
-#include "sensor_reading.h"
+#include "diagnostic_rule.hpp"
+#include "sensor_reading.hpp"
 
 class DiagnosticEngine
 {

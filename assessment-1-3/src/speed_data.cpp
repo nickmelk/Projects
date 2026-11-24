@@ -1,4 +1,4 @@
-#include "speed_data.h"
+#include "speed_data.hpp"
 
 #include <algorithm>
 #include <numeric>

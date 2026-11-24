@@ -1,44 +1,38 @@
-#include "udp_client.h"
+#include "udp_client.hpp"
 
-#include "../constants.h"
-#include "../message_data/message_data.h"
-#include "../message_queue/message_queue.h"
+#include "../message/message.hpp"
+#include "../socket_address/socket_address.hpp"
 
 #include <sys/socket.h>
 
 #include <iostream>
 
-const MessageQueue& UDPClient::queue() const
-{
-    return m_queue;
-}
-
 void UDPClient::bind(const SocketAddress& address)
 {
-    int error {::bind(m_handler.socket(), (struct sockaddr*)&address,
-        sizeof(address))};
+    int error {::bind(m_handler.socket(), (struct sockaddr*)&address.address(),
+        sizeof(address.address()))};
     if (error)
     {
         std::cerr << "Failed to bind to an address\n";
-        m_ok = false;
+        m_is_valid = false;
     }
 }
 
 void UDPClient::receive()
 {
-    MessageData data {};
-    data.bytes = recv(m_handler.socket(), data.buffer.data(),
-        constants::buffer_size, 0);
-    if (data.bytes < 0)
+    Message message {};
+    message.bytes = recv(m_handler.socket(), message.buffer.data(),
+        Message::buffer_size, 0);
+    if (message.bytes < 0)
     {
         std::cerr << "Failed to receive a packet\n";
-        m_ok = false;
+        m_is_valid = false;
     }
     else
-        m_queue.push(data);
+        m_queue.push(message);
 }
 
 UDPClient::operator bool() const
 {
-    return m_ok;
+    return m_is_valid;
 }

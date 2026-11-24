@@ -1,7 +1,7 @@
 #ifndef DIAGNOSTIC_RULE_H
 #define DIAGNOSTIC_RULE_H
 
-#include "logger_interface.h"
+#include "logger_interface.hpp"
 
 template <typename Pred>
 class DiagnosticRule

@@ -1,5 +1,5 @@
-.venv
+.venv/
 bazel-*
-build
-gen
+build/
+gen/
 MODULE.bazel.lock
