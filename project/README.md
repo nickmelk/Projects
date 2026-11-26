@@ -1,6 +1,6 @@
 ## Description
 
-TODO
+A simple project that consists of a client and a server communicating through the UDP protocol. The Python server generates random sensor readings and sends them in Protobuf format through a socket. The C++ client receives messages from the server, processes them, and logs results to the console. The client's work is divided between two threads: a receiver (main) and a processor. The receiver is responsible for receiving and storing messages from the server. The processor is responsible for processing messages and logging results to the console.
 
 ## Build
 
@@ -17,6 +17,8 @@ Build the application using Bazel:
 ```
 bazel build //project:udp_client
 ```
+
+## Usage
 
 Launch the server and the client:
 

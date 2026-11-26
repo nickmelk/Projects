@@ -2,22 +2,28 @@
 #define UDP_CLIENT_H
 
 #include "../message_processor/message_processor.hpp"
-#include "../message_queue/message_queue.hpp"
-#include "../socket_address/socket_address.hpp"
 #include "../socket_handler/socket_handler.hpp"
+
+#include <netinet/in.h>
+
+#include <atomic>
+#include <string_view>
 
 class UDPClient
 {
 public:
-    void bind(const SocketAddress& address);
-    void receive();
-    operator bool() const;
+    explicit UDPClient(std::string_view address, int port);
+    void start();
+    void stop();
 
 private:
+    void loop();
+    void receive();
+
     SocketHandler m_handler {};
-    MessageQueue m_queue {};
-    bool m_is_valid {true};
-    MessageProcessor m_processor {m_queue, m_is_valid};
+    sockaddr_in m_address {};
+    std::atomic_bool m_is_running {};
+    MessageProcessor m_processor {};
 };
 
 #endif

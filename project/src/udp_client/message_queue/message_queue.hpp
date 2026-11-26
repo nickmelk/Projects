@@ -3,8 +3,6 @@
 
 #include "../message/message.hpp"
 
-#include <condition_variable>
-#include <mutex>
 #include <optional>
 #include <queue>
 
@@ -19,8 +17,6 @@ private:
     static constexpr int max_size {100};
 
     std::queue<Message> m_queue {};
-    std::mutex m_mutex {};
-    std::condition_variable m_cv {};
 };
 
 #endif

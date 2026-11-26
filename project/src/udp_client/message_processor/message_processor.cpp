@@ -3,16 +3,45 @@
 #include "../constants.hpp"
 #include "../gen/schema.pb.h"
 #include "../message/message.hpp"
-#include "../message_queue/message_queue.hpp"
+#include "../thread_handler/thread_handler.hpp"
 
+#include <atomic>
 #include <functional>
 #include <iostream>
+#include <mutex>
 #include <optional>
 
-MessageProcessor::MessageProcessor(MessageQueue& queue, const bool& status)
-    : m_handler {&MessageProcessor::process, this, std::ref(queue), std::ref(status)}
+void MessageProcessor::start(const std::atomic_bool& is_running)
 {
+    m_handler = ThreadHandler {&MessageProcessor::process_message, this,
+        std::cref(is_running)};
+}
 
+void MessageProcessor::enqueue(const Message& message)
+{
+    std::unique_lock<std::mutex> lock {m_mutex};
+    m_queue.push(message);
+    lock.unlock();
+    m_cv.notify_one();
+}
+
+void MessageProcessor::process_message(const std::atomic_bool& is_running)
+{
+    while (is_running)
+    {
+        std::unique_lock<std::mutex> lock {m_mutex};
+        m_cv.wait(lock, [this, &is_running]() {return !m_queue.empty() ||
+            !is_running;});
+        std::optional<Message> message {m_queue.pop()};
+        lock.unlock();
+        if (message)
+            parse_message(*message);
+    }
+}
+
+void MessageProcessor::stop()
+{
+    m_cv.notify_one();
 }
 
 void MessageProcessor::parse_message(const Message& message) const
@@ -48,14 +77,5 @@ void MessageProcessor::parse_reading(const ReadingMessage& reading) const
         log(reading.temperature_reading(), constants::unknown_reading,
             reading.ByteSizeLong());
         break;
-    }
-}
-
-void MessageProcessor::process(MessageQueue& queue, const bool& status) const
-{
-    while (status)
-    {
-        if (std::optional<Message> message {queue.pop()}; message)
-            parse_message(*message);
     }
 }
